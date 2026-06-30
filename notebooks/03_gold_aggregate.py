@@ -1,19 +1,9 @@
-STORAGE_ACCOUNT = "dlnycproject"
-
-BRONZE = f"abfss://bronze@{STORAGE_ACCOUNT}.dfs.core.windows.net"
-SILVER = f"abfss://silver@{STORAGE_ACCOUNT}.dfs.core.windows.net"
-GOLD   = f"abfss://gold@{STORAGE_ACCOUNT}.dfs.core.windows.net"
-
-print(f"Bronze path: {BRONZE}")
-print(f"Silver path: {SILVER}")
-print(f"Gold path:   {GOLD}")
-
 from pyspark.sql import functions as F
+from config import SILVER, GOLD
 
 df_311   = spark.read.format("delta").load(f"{SILVER}/311_clean")
 df_crime = spark.read.format("delta").load(f"{SILVER}/crime_clean")
 
-# Filter out remaining bad rows
 df_311_clean   = df_311.filter(F.col("year").isNotNull() & (F.col("year") > 2000))
 df_crime_clean = df_crime.filter(F.col("year").isNotNull() & (F.col("year") > 2000))
 

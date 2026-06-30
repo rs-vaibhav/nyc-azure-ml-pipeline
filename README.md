@@ -14,7 +14,7 @@ The system runs as a fully orchestrated cloud pipeline using **Azure Data Factor
    - **Gold**: Generate weekly aggregates, compute complaint-to-crime ratios, build the master ML feature table, and export dimensions.
 3. **Data Warehousing**: Synapse Analytics ingests Gold Delta tables for high-performance warehousing.
 4. **Business Intelligence**: Power BI queries Synapse to present real-time dashboards of city health, crime distributions, and complaints.
-5. **Machine Learning & MLOps**: XGBoost model trains on Gold data, runs Leave-One-Borough-Out (LOGO) cross-validation, logs performance to MLflow, and exports the final model to ADLS.
+5. **Machine Learning & MLOps**: XGBoost model trains on Gold data, runs Leave-One-Borough-Out (LOGO) cross-validation, exports performance metrics to ADLS, and persists the final model artifact.
 6. **Model Consumption**: An Azure Function API loads the model from ADLS to serve predictions on-demand.
 
 ![System Architecture](docs/screenshots/architecture_diagram.jpg)
@@ -23,24 +23,24 @@ The system runs as a fully orchestrated cloud pipeline using **Azure Data Factor
 
 ## 📁 Repository Structure
 
-```directory
+```
 .
-├── notebooks-databricks/
-│   ├── 01_bronze_validate.py            # Phase 1: Raw JSON validation
-│   ├── 02_silver_transform.py           # Phase 2: Cleansing and Delta conversion
-│   ├── 03_gold_aggregate.py             # Phase 3: Analytical aggregates & ML feature store
-│   └── 04_feature_engineering_training.py # Phase 4: XGBoost LOGO CV training & MLOps export
+├── notebooks/
+│   ├── config.py                         # Shared ADLS storage path configuration
+│   ├── 01_bronze_validate.py             # Phase 1: Raw JSON validation
+│   ├── 02_silver_transform.py            # Phase 2: Cleansing and Delta conversion
+│   ├── 03_gold_aggregate.py              # Phase 3: Analytical aggregates & ML feature store
+│   └── 04_feature_engineering_training.py # Phase 4: XGBoost LOGO CV training & model export
 ├── azure_functions/
-│   ├── function_app.py                  # Serverless HTTP Trigger predicting crime spikes
-│   ├── requirements.txt                 # Python dependencies (xgboost, scikit-learn, numpy)
-│   └── host.json                        # Azure Functions host-level settings
+│   ├── function_app.py                   # Serverless HTTP Trigger predicting crime spikes
+│   ├── requirements.txt                  # Python dependencies (xgboost, scikit-learn, numpy)
+│   └── host.json                         # Azure Functions host-level settings
 ├── docs/
 │   └── screenshots/
-│       ├── architecture_diagram.jpg     # System Overview
-│       ├── feature_importance.jpg       # XGBoost Feature Importance
-│       └── powerbi_dashboard.png        # Power BI report screenshot
-├── nyc.pdf                              # Power BI Report Export
-└── README.md                            # Comprehensive Project Documentation
+│       ├── architecture_diagram.jpg      # System overview diagram
+│       ├── feature_importance.jpg        # XGBoost feature importance chart
+│       └── powerbi_dashboard.png         # Power BI report screenshot
+└── README.md
 ```
 
 ---
